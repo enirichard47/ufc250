@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>UFC250 Coin | White House Octagon</title>
+    <link rel="icon" type="image/png" href="images/ufc.jpg">
+    <link rel="apple-touch-icon" href="images/ufc.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <!-- Swiper CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --primary: #E20A17;
+            --secondary: #0F2C59;
+            --accent: #F3C623;
+            --dark: #070D19;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        .font-meme {
+            font-family: 'Bungee', cursive;
+        }
+
+        /* Core Animations */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(2deg);
+            }
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(226, 10, 23, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(226, 10, 23, 0.6);
+            }
+        }
+
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .pulse-glow {
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        .bg-meme-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Lightbox logic */
+        #lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Nav Link Effects */
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .bg-dark {
+            background-color: #040810 !important;
+        }
+
+        [data-typewriter] {
+            white-space: pre-wrap;
+            display: inline-block;
+            min-height: 1.5em;
+        }
+    </style>
+</head>
+
+<body class="selection:bg-[#E20A17] selection:text-black overflow-x-hidden relative min-h-screen w-full">
+
+    <!-- Preloader -->
+    <div id="preloader"
+        class="fixed inset-0 bg-[#070D19] z-[100] flex flex-col items-center justify-center transition-all duration-1000 ease-in-out">
+        <div class="relative flex items-center justify-center mb-8">
+            <!-- Elegant SVG Ring -->
+            <svg class="w-48 h-48 animate-[spin_4s_linear_infinite]" viewBox="0 0 100 100">
+                <circle class="text-white/5" stroke-width="2" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" />
+                <circle class="text-[#E20A17] transition-all duration-500 ease-out" stroke-width="2" 
+                    stroke-dasharray="283" stroke-dashoffset="70" stroke-linecap="round" stroke="currentColor" 
+                    fill="transparent" r="45" cx="50" cy="50" />
+            </svg>
+            <img src="images/ufc.jpg" alt="Loading"
+                class="absolute w-32 h-32 rounded-full border-2 border-white/10 shadow-[0_0_50px_rgba(226, 10, 23,0.3)]">
+        </div>
+        <div class="overflow-hidden">
+            <h2 id="preloader-text"
+                class="text-sm sm:text-base font-bold text-white tracking-[0.5em] uppercase text-center px-4 opacity-0 transform translate-y-4">
+                PREPARING THE OCTAGON...</h2>
+        </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="fixed top-0 w-full z-50 p-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center glass rounded-3xl px-6 py-4">
+            <div class="flex items-center gap-3">
+                <img src="images/ufc.jpg" alt="UFC250 Logo"
+                    class="w-12 h-12 rounded-full border-2 border-[#E20A17] shadow-[0_0_15px_rgba(226, 10, 23,0.5)]">
+                <span class="text-2xl font-meme tracking-tighter hidden md:block uppercase">UFC250</span>
+            </div>
+            <div class="hidden lg:flex gap-6 font-bold uppercase text-xs tracking-widest">
+                <a href="#about" class="nav-link text-white hover:text-[#E20A17] transition-colors">The Event</a>
+                <a href="#chart" class="nav-link text-white hover:text-[#E20A17] transition-colors">Live Chart</a>
+                <a href="#mechanics" class="nav-link text-white hover:text-[#E20A17] transition-colors">Tokenomics</a>
+                <a href="#buy" class="nav-link text-white hover:text-[#E20A17] transition-colors">How to Buy</a>
+                <a href="#roadmap" class="nav-link text-white hover:text-[#E20A17] transition-colors">The Schedule</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="https://pump.fun/coin/GXieFxZFPVYuw3NJTfr4zRooeRgYPN9ssAkEn5MBpump" target="_blank"
+                    class="bg-meme-gradient px-6 py-2 rounded-full font-meme text-sm hover:scale-105 transition-transform shadow-xl hidden sm:block">
+                    SECURE THE BELT
+                </a>
+                <!-- Hamburger Button -->
+                <button id="mobile-menu-btn"
+                    class="lg:hidden text-white hover:text-[#E20A17] focus:outline-none p-2 rounded-lg bg-white/10 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu"
+        class="fixed inset-0 bg-black/95 z-[100] hidden flex-col items-center justify-center gap-8 backdrop-blur-xl transition-opacity opacity-0">
+        <button id="mobile-menu-close"
+            class="absolute top-8 right-8 text-white hover:text-[#E20A17] bg-white/10 p-3 rounded-full transition-all hover:scale-110">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <a href="#about"
+            class="mobile-nav-link text-3xl font-meme text-white hover:text-[#E20A17] transition-colors uppercase">The Event</a>
+        <a href="#chart"
+            class="mobile-nav-link text-3xl font-meme text-white hover:text-[#E20A17] transition-colors uppercase">Live Chart</a>
+        <a href="#mechanics"
+            class="mobile-nav-link text-3xl font-meme text-white hover:text-[#E20A17] transition-colors uppercase">Tokenomics</a>
+        <a href="#buy"
+            class="mobile-nav-link text-3xl font-meme text-white hover:text-[#E20A17] transition-colors uppercase">How to Buy</a>
+        <a href="#roadmap"
+            class="mobile-nav-link text-3xl font-meme text-white hover:text-[#E20A17] transition-colors uppercase">The Schedule</a>
+        <a href="https://pump.fun/coin/GXieFxZFPVYuw3NJTfr4zRooeRgYPN9ssAkEn5MBpump" target="_blank"
+            class="bg-meme-gradient px-8 py-4 rounded-full font-meme text-xl shadow-xl mt-4 text-center hover:scale-105 transition-transform">
+            BUY UFC250
+        </a>
+    </div>
+
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-40">
+        <div
+            class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#E20A17]/10 via-transparent to-transparent">
+        </div>
+
+        <div class="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center z-10">
+            <div class="text-center lg:text-left">
+                <div
+                    class="inline-block bg-white/10 px-4 py-1 rounded-full text-[#E20A17] font-bold text-sm mb-6 border border-[#E20A17]/30 uppercase tracking-[0.2em]">
+                    🦅 HISTORIC WHITE HOUSE BRAWL
+                </div>
+                <h1 class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-meme leading-none mb-6">
+                    <span class="text-[#E20A17]">UFC 250</span> <span class="text-[#F3C623]">COIN</span>
+                </h1>
+<p class="text-lg md:text-xl font-medium text-gray-300 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed shadow-sm drop-shadow-md text-center lg:text-left">
+    <span class="block mb-4 text-white font-bold text-2xl md:text-3xl tracking-tight">History is in the making.<br>Raw combat live from the South Lawn. 🦅</span>
+    <span class="opacity-90 block mb-4 border-l-4 border-[#E20A17] pl-4 py-1 text-left italic">The most insane, historic sporting event ever hosted at the White House—on Trump's 80th birthday. 🇺🇸</span>
+    Billed as part of America's 250th anniversary celebrations, this is on track to become the most controversial sporting event in history. First sports event EVER at the White House. Don't watch from the sidelines. Secure your piece of history.
+</p>
+                <div class="flex flex-wrap justify-center lg:justify-start gap-4">
+                    <a href="https://pump.fun/coin/GXieFxZFPVYuw3NJTfr4zRooeRgYPN9ssAkEn5MBpump" target="_blank">
+                        <button
+                            class="bg-[#E20A17] text-white px-10 py-5 rounded-2xl font-meme text-xl hover:bg-white hover:text-black transition-all transform hover:-rotate-1 pulse-glow">GET UFC250</button>
+                    </a>
+                    <button onclick="document.getElementById('chart').scrollIntoView({behavior: 'smooth'})"
+                        class="glass px-10 py-5 rounded-2xl font-meme text-xl hover:bg-white/10 transition-all transform hover:rotate-1">VIEW TICKER</button>
+                </div>
+                <div class="mt-8 flex flex-col items-center lg:items-start group max-w-full">
+                    <p class="text-sm font-bold text-gray-400 mb-2 uppercase tracking-widest text-shadow">The Paper Trail (Click to Copy)</p>
+                    <pre class="bg-black/50 p-3 md:p-4 rounded-xl text-[#E20A17] font-bold border border-[#E20A17]/30 break-all whitespace-pre-wrap text-[0.65rem] md:text-base text-center select-all cursor-pointer hover:bg-[#E20A17] hover:text-black transition-colors w-full"
+                        onclick="navigator.clipboard.writeText('GXieFxZFPVYuw3NJTfr4zRooeRgYPN9ssAkEn5MBpump'); alert('Contract Address Copied!');">GXieFxZFPVYuw3NJTfr4zRooeRgYPN9ssAkEn5MBpump</pre>
+                </div>
+            </div>
+            <div class="relative mt-12 lg:mt-0">
+                <div
+                    class="relative w-full aspect-square rotate-3 float overflow-hidden flex items-center justify-center filter drop-shadow-[0_0_40px_rgba(226, 10, 23,0.4)] bg-black/20 rounded-[4rem]">
+                    <img src="images/hero.jpg" alt="UFC250 Hero" class="object-cover w-full h-full rounded-[4rem] border-8 border-white/10">
+                </div>
+                <div
+                    class="absolute -top-10 right-0 sm:-right-10 bg-[#E20A17] text-white px-4 py-3 sm:px-6 sm:py-4 rounded-3xl font-meme -rotate-12 shadow-2xl text-xl sm:text-2xl z-20 border-2 border-[#F3C623]">
+                    TRUMP'S 80TH</div>
+                <div
+                    class="absolute -bottom-6 left-0 sm:-left-6 bg-[#0F2C59] text-black px-4 py-3 sm:px-6 sm:py-4 rounded-3xl font-meme rotate-6 shadow-2xl text-lg sm:text-xl z-20">
+                    AMERICA'S 250TH 🦅</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. ABOUT / LORE -->
+    <section id="about" class="py-24 bg-white text-black relative overflow-hidden">
+        <div class="container mx-auto px-4 grid md:grid-cols-2 gap-16 items-center">
+            <div class="space-y-8 text-center md:text-left">
+                <h2 class="text-4xl sm:text-5xl md:text-7xl font-meme leading-tight break-words">TIRED OF THE<br class="md:hidden"> <span class="text-[#E20A17]">SAME OLD MEMES?</span></h2>
+                <p class="text-xl font-medium opacity-80 leading-relaxed">
+                    Welcome to UFC250 Coin. This isn't just another launch; it's the ultimate convergence of combat sports, presidential history, and nationwide celebration.
+                    <br><br>
+                    While standard coins debate utility, UFC250 is converting the White House South Lawn into a high-octane octagon. As Trump celebrates his 80th birthday and America marks its 250th anniversary, the eyes of the entire world will be on this historic event.
+                </p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gray-100 p-6 rounded-3xl text-center border-2 border-black text-black">
+                        <div class="text-4xl mb-2">🥜</div>
+                        <div class="font-meme">HISTORIC</div>
+                    </div>
+                    <div class="bg-gray-100 p-6 rounded-3xl text-center border-2 border-black text-black">
+                        <div class="text-4xl mb-2">🔥</div>
+                        <div class="font-meme">CONTROVERSIAL</div>
+                    </div>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="flex flex-col sm:flex-row gap-8 sm:gap-4 py-8 px-4 justify-center items-center">
+                    <div
+                        class="w-full sm:min-w-[280px] sm:max-w-xs bg-black text-white p-8 rounded-[2rem] sm:-rotate-2 border border-white/10 shadow-2xl relative overflow-hidden group">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-[#E20A17]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                        </div>
+                        <div class="text-4xl mb-4 text-[#E20A17]">🦅</div>
+                        <h4 class="font-meme text-xl mb-2 text-[#E20A17]">THE NARRATIVE</h4>
+                        <p class="text-sm opacity-70 relative z-10 transition-colors group-hover:text-white">Celebrating 250 years of American freedom with the most extreme showdown in history. The ultimate meme merger.
+                        </p>
+                    </div>
+                    <div
+                        class="w-full sm:min-w-[280px] sm:max-w-xs bg-[#E20A17] text-white p-8 rounded-[2rem] sm:rotate-3 shadow-2xl relative overflow-hidden group hover:scale-105 transition-transform">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-tl from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                        </div>
+                        <div class="text-4xl mb-4 relative z-10">🎂</div>
+                        <h4 class="font-meme text-xl mb-2 relative z-10 text-white">80 YEARS OF FIGHT</h4>
+                        <p class="text-sm font-medium relative z-10">Happening live on Trump's 80th birthday. A birthday celebration the world will never, ever forget.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. LIVE CHART & STAT SHAPES -->
+    <section id="chart" class="py-24 bg-dark">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-8xl font-meme mb-4">THE OCTAGON TICKER</h2>
+                <p class="text-xl font-bold opacity-90 uppercase tracking-widest text-[#E20A17]">Tracking the $UFC250 momentum in real-time
+                </p>
+            </div>
+            <div class="grid lg:grid-cols-4 gap-6 mb-12">
+                <div class="glass p-8 rounded-3xl border-b-4 border-[#E20A17] hover:scale-105 transition-transform">
+                    <p class="text-xs uppercase tracking-tighter opacity-50 mb-2">Market Cap</p>
+                    <h3 id="stat-mcap" class="text-3xl font-meme text-[#E20A17]">Loading...</h3>
+                </div>
+                <div class="glass p-8 rounded-3xl border-b-4 border-[#F3C623] hover:scale-105 transition-transform">
+                    <p class="text-xs uppercase tracking-tighter opacity-50 mb-2">Price (USD)</p>
+                    <h3 id="stat-price" class="text-2xl font-meme text-[#F3C623]">Loading...</h3>
+                </div>
+                <div class="glass p-8 rounded-3xl border-b-4 border-[#E20A17] hover:scale-105 transition-transform">
+                    <p class="text-xs uppercase tracking-tighter opacity-50 mb-2">Liquidity</p>
+                    <h3 id="stat-liquidity" class="text-2xl font-meme text-[#E20A17]">Loading...</h3>
+                </div>
+                <div class="glass p-8 rounded-3xl border-b-4 border-[#F3C623] hover:scale-105 transition-transform">
+                    <p class="text-xs uppercase tracking-tighter opacity-50 mb-2">24h Volume</p>
+                    <h3 id="stat-volume" class="text-2xl font-meme text-[#F3C623]">Loading...</h3>
+                </div>
+            </div>
+
+            <div class="glass rounded-[3rem] p-4 h-[600px] overflow-hidden border-2 border-white/10 shadow-2xl">
+                <iframe
+                    src="https://dexscreener.com/solana/GXieFxZFPVYuw3NJTfr4zRooeRgYPN9ssAkEn5MBpump?embed=1&theme=dark"
+                    class="w-full h-full rounded-[2rem]" frameborder="0">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. TOKEN / MECHANICS -->
+    <section id="mechanics" class="py-24 bg-meme-gradient text-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-8xl font-meme mb-4">FIGHT PROTOCOL</h2>
+                <p class="text-xl font-bold opacity-90 uppercase tracking-widest">How we secure the championship belt
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div
+                    class="glass bg-black/60 p-8 rounded-3xl backdrop-blur-md border-[1px] border-white/20 hover:border-[#E20A17] hover:bg-black/80 hover:shadow-[0_0_30px_rgba(226, 10, 23,0.4)] transition-colors transition-shadow duration-300 text-center group">
+                    <div class="transform transition-transform duration-300 group-hover:-translate-y-2">
+                        <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">🇺🇸</div>
+                        <h4 class="font-meme text-xl mb-2 text-[#E20A17]">PATRIOT DRIVE</h4>
+                        <p class="text-sm opacity-90">Built on absolute community momentum celebrating America's 250th anniversary. We stand together.</p>
+                    </div>
+                </div>
+                <div
+                    class="glass bg-black/60 p-8 rounded-3xl backdrop-blur-md border-[1px] border-white/20 hover:border-[#F3C623] hover:bg-black/80 hover:shadow-[0_0_30px_rgba(15, 44, 89,0.4)] transition-colors transition-shadow duration-300 text-center group">
+                    <div class="transform transition-transform duration-300 group-hover:-translate-y-2">
+                        <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">📈</div>
+                        <h4 class="font-meme text-xl mb-2 text-[#F3C623]">BULL RUN FIGHT</h4>
+                        <p class="text-sm opacity-90">High volatility, high energy. The ultimate sport-politi-meme token on Solana.</p>
+                    </div>
+                </div>
+                <div
+                    class="glass bg-black/60 p-8 rounded-3xl backdrop-blur-md border-[1px] border-white/20 hover:border-[#E20A17] hover:bg-black/80 hover:shadow-[0_0_30px_rgba(226, 10, 23,0.4)] transition-colors transition-shadow duration-300 text-center group">
+                    <div class="transform transition-transform duration-300 group-hover:-translate-y-2">
+                        <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">🥊</div>
+                        <h4 class="font-meme text-xl mb-2 text-[#E20A17]">DIAMOND GLOVES</h4>
+                        <p class="text-sm opacity-90">Hold your position. The most historic events require the strongest hands. Secure the belt.</p>
+                    </div>
+                </div>
+                <div
+                    class="glass bg-black/60 p-8 rounded-3xl backdrop-blur-md border-[1px] border-white/20 hover:border-[#F3C623] hover:bg-black/80 hover:shadow-[0_0_30px_rgba(15, 44, 89,0.4)] transition-colors transition-shadow duration-300 text-center group">
+                    <div class="transform transition-transform duration-300 group-hover:-translate-y-2">
+                        <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">🔥</div>
+                        <h4 class="font-meme text-xl mb-2 text-[#F3C623]">WHITE HOUSE HEAT</h4>
+                        <p class="text-sm opacity-90">As the event approaches, the media storm grows. The hype feeds the chart in real-time.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. SHOWCASE (PREMIUM CAROUSEL) -->
+    <section class="py-32 bg-dark relative overflow-hidden" id="gallery">
+        <!-- Dynamic Background Layer -->
+        <div class="absolute inset-0 opacity-20 z-0">
+            <img src="images/ufc.jpg" class="w-full h-full object-cover blur-sm scale-110" alt="">
+            <div class="absolute inset-0 bg-gradient-to-b from-dark via-transparent to-dark"></div>
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-24">
+                <div class="inline-block px-4 py-1 rounded-full border border-[#E20A17]/30 bg-[#E20A17]/10 text-[#E20A17] text-xs font-bold tracking-[0.3em] uppercase mb-4">
+                    Visual Archive
+                </div>
+                <h2 class="text-5xl md:text-7xl font-meme text-white tracking-widest uppercase mb-6">
+                    <span class="text-[#F3C623]">$UFC250</span> ARCHIVE
+                </h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-transparent via-[#E20A17] to-transparent mx-auto"></div>
+            </div>
+        </div>
+
+        <!-- Standardized Showcase Slider -->
+        <div class="showcase-outer w-full overflow-hidden pb-32">
+            <div class="swiper showcase-swiper relative">
+                <div class="swiper-wrapper items-center">
+                <!-- Card 1 -->
+                <div class="swiper-slide w-[85vw] md:w-[600px]">
+                    <div class="showcase-card relative h-[400px] md:h-[550px] rounded-[3rem] overflow-hidden group border border-white/10 glass transition-all duration-700">
+                        <img src="images/meme1.jpg" class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110" alt="">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#000000] via-transparent to-transparent opacity-60"></div>
+                        <div class="absolute bottom-0 left-0 w-full p-8 md:p-12 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                            <h4 class="text-3xl font-meme text-white mb-2 uppercase">South Lawn Showdown</h4>
+                            <p class="text-[#E20A17] font-bold tracking-widest text-sm uppercase mb-4">WHITE HOUSE OCTAGON</p>
+                            <div class="h-0.5 w-0 group-hover:w-32 bg-[#E20A17] transition-all duration-700"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="swiper-slide w-[85vw] md:w-[600px]">
+                    <div class="showcase-card relative h-[400px] md:h-[550px] rounded-[3rem] overflow-hidden group border border-white/10 glass transition-all duration-700">
+                        <img src="images/meme2.jpg" class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110" alt="">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#000000] via-transparent to-transparent opacity-60"></div>
+                        <div class="absolute bottom-0 left-0 w-full p-8 md:p-12 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                            <h4 class="text-3xl font-meme text-white mb-2 uppercase">America's 250th Anniversary</h4>
+                            <p class="text-[#F3C623] font-bold tracking-widest text-sm uppercase mb-4">JULY 4TH MOMENTUM</p>
+                            <div class="h-0.5 w-0 group-hover:w-32 bg-[#F3C623] transition-all duration-700"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="swiper-slide w-[85vw] md:w-[600px]">
+                    <div class="showcase-card relative h-[400px] md:h-[550px] rounded-[3rem] overflow-hidden group border border-white/10 glass transition-all duration-700">
+                        <img src="images/hero.jpg" class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110" alt="">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#000000] via-transparent to-transparent opacity-60"></div>
+                        <div class="absolute bottom-0 left-0 w-full p-8 md:p-12 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                            <h4 class="text-3xl font-meme text-white mb-2 uppercase">Trump's 80th Birthday</h4>
+                            <p class="text-[#E20A17] font-bold tracking-widest text-sm uppercase mb-4">THE ULTIMATE FIGHT CARD</p>
+                            <div class="h-0.5 w-0 group-hover:w-32 bg-[#E20A17] transition-all duration-700"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <!-- Custom Controls Wrapped in Container -->
+        <div class="container mx-auto px-4 -mt-12 mb-12 relative z-20">
+            <div class="flex items-center justify-center gap-12">
+                <div class="showcase-prev w-16 h-16 rounded-full border border-white/20 flex items-center justify-center cursor-pointer transition-all hover:bg-[#E20A17] hover:text-white hover:border-transparent group">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 transition-transform group-hover:-translate-x-1">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                </div>
+                <div class="showcase-pagination !w-auto bottom-auto relative"></div>
+                <div class="showcase-next w-16 h-16 rounded-full border border-white/20 flex items-center justify-center cursor-pointer transition-all hover:bg-[#E20A17] hover:text-white hover:border-transparent group">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 transition-transform group-hover:translate-x-1">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+            .showcase-swiper {
+                overflow: visible !important;
+            }
+            .showcase-card {
+                transform: scale(0.85);
+                opacity: 0.3;
+                transition: all 0.7s cubic-bezier(0.2, 1, 0.3, 1);
+            }
+            .swiper-slide-active .showcase-card {
+                transform: scale(1);
+                opacity: 1;
+                filter: none;
+                box-shadow: 0 0 50px rgba(226, 10, 23, 0.2);
+            }
+            .showcase-pagination .swiper-pagination-bullet {
+                background: white !important;
+                opacity: 0.2;
+                width: 10px;
+                height: 10px;
+                margin: 0 12px !important;
+                transition: all 0.4s ease;
+            }
+            .showcase-pagination .swiper-pagination-bullet-active {
+                opacity: 1;
+                background: #E20A17 !important;
+                width: 45px;
+                border-radius: 5px;
+                box-shadow: 0 0 20px #E20A17;
+            }
+        </style>
+    </section>
+
+    <!-- 6. ROADMAP -->
+    <section id="roadmap" class="py-24 bg-dark">
+        <div class="container mx-auto px-4">
+            <h2 class="text-6xl font-meme text-center mb-20">THE <span class="text-[#F3C623]">SCHEDULE</span>
+            </h2>
+            <div class="flex flex-col gap-12 max-w-5xl mx-auto">
+                <div
+                    class="glass rounded-[3rem] border-l-8 border-[#E20A17] hover:shadow-[0_0_40px_rgba(226, 10, 23,0.3)] transition-shadow duration-300 group">
+                    <div
+                        class="flex flex-col md:flex-row gap-8 items-center p-10 transform transition-transform duration-300 hover:-translate-y-2">
+                        <div
+                            class="text-7xl group-hover:scale-125 group-hover:rotate-12 transition-transform duration-300">
+                            🦅</div>
+                        <div>
+                            <h3 class="text-3xl font-meme mb-2 text-[#E20A17]">PHASE 1: THE WEIGH-IN</h3>
+                            <p
+                                class="text-lg text-white/80 italic group-hover:text-white transition-colors duration-300">
+                                Deploying $UFC250. Launching the token, establishing our social hubs, and gathering the core fighters.</p>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="glass rounded-[3rem] border-l-8 border-[#F3C623] ml-0 md:ml-12 hover:shadow-[0_0_40px_rgba(15, 44, 89,0.3)] transition-shadow duration-300 group">
+                    <div
+                        class="flex flex-col md:flex-row gap-8 items-center p-10 transform transition-transform duration-300 hover:-translate-y-2">
+                        <div
+                            class="text-7xl group-hover:scale-125 group-hover:rotate-12 transition-transform duration-300">
+                            🎙️</div>
+                        <div>
+                            <h3 class="text-3xl font-meme mb-2 text-[#F3C623]">PHASE 2: THE PRESS CONFERENCE</h3>
+                            <p
+                                class="text-lg text-white/80 italic group-hover:text-white transition-colors duration-300">
+                                Viral community marketing, national press attention, meme contests, and securing listings on major trackers.</p>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="glass rounded-[3rem] border-l-8 border-[#E20A17] ml-0 md:ml-24 hover:shadow-[0_0_40px_rgba(226, 10, 23,0.3)] transition-shadow duration-300 group">
+                    <div
+                        class="flex flex-col md:flex-row gap-8 items-center p-10 transform transition-transform duration-300 hover:-translate-y-2">
+                        <div
+                            class="text-7xl group-hover:scale-125 group-hover:rotate-12 transition-transform duration-300">
+                            🥊</div>
+                        <div>
+                            <h3 class="text-3xl font-meme mb-2 text-[#E20A17]">PHASE 3: MAIN CARD LIVE</h3>
+                            <p
+                                class="text-lg text-white/80 italic group-hover:text-white transition-colors duration-300">
+                                The event goes live at the White House. Reaching Tier-1 momentum, cementing our legacy as the ultimate meme.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. SOCIAL PROOF SATIRE -->
+    <section class="py-24 bg-[#E20A17] text-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-meme text-center mb-12 uppercase">UFC250 PRINCIPLES</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div
+                    class="bg-black p-8 rounded-2xl border-4 border-white rotate-1 hover:-translate-y-3 hover:rotate-0 hover:shadow-[10px_10px_0px_0px_rgba(255,255,255,1)] transition-all duration-300 group">
+                    <h4 class="text-xl font-black mb-4 uppercase group-hover:text-[#E20A17] transition-colors">FIGHT TO WIN</h4>
+                    <p class="text-sm font-bold opacity-60 md:opacity-100 md:text-gray-300">We keep our composure while the media panics. In the octagon of Solana, only the strongest survive.</p>
+                </div>
+                <div
+                    class="bg-black p-8 rounded-2xl border-4 border-white -rotate-1 hover:-translate-y-3 hover:rotate-0 hover:shadow-[10px_10px_0px_0px_rgba(255,255,255,1)] transition-all duration-300 group">
+                    <h4 class="text-xl font-black mb-4 uppercase group-hover:text-[#E20A17] transition-colors">
+                        EMBRACE THE CHAOS</h4>
+                    <p class="text-sm font-bold opacity-60 md:opacity-100 md:text-gray-300">Controversy is our fuel. Every headline, tweet, and stream feeds our community's momentum.</p>
+                </div>
+                <div
+                    class="bg-black p-8 rounded-2xl border-4 border-white rotate-2 hover:-translate-y-3 hover:rotate-0 hover:shadow-[10px_10px_0px_0px_rgba(255,255,255,1)] transition-all duration-300 group">
+                    <h4 class="text-xl font-black mb-4 uppercase group-hover:text-[#E20A17] transition-colors">HISTORIC PRESENCE</h4>
+                    <p class="text-sm font-bold opacity-60 md:opacity-100 md:text-gray-300">We represent a once-in-a-lifetime alignment: 250 years of America, Trump's 80th, and UFC at the White House.</p>
+                </div>
+            </div>
+            <p class="text-center mt-10 text-xs font-bold opacity-50 uppercase tracking-widest">OBSERVED AND HISTORIC SINCE INCEPTION</p>
+        </div>
+    </section>
+
+    <section id="buy" class="py-24 bg-dark">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <h2 class="text-5xl font-meme text-center mb-16 underline decoration-[#F3C623]">SECURE YOUR TICKET ($UFC250)</h2>
+            <div class="space-y-6">
+                <!-- Contract Address Box -->
+                <div
+                    class="glass flex flex-col items-center justify-center border-[#E20A17] p-8 rounded-3xl mb-8 group hover:shadow-[0_0_30px_rgba(226, 10, 23,0.3)] transition-shadow">
+                    <h4 class="text-2xl font-meme mb-3 text-[#E20A17]">THE CONTRACT (CA)</h4>
+                    <pre class="bg-black/50 p-4 rounded-xl text-[#E20A17] font-bold break-all whitespace-pre-wrap text-center select-all cursor-pointer hover:bg-[#E20A17] hover:text-black transition-colors"
+                        onclick="navigator.clipboard.writeText('GXieFxZFPVYuw3NJTfr4zRooeRgYPN9ssAkEn5MBpump'); alert('Contract Address Copied!');">GXieFxZFPVYuw3NJTfr4zRooeRgYPN9ssAkEn5MBpump</pre>
+                    <p class="text-xs opacity-50 mt-3">(Click to copy the CA)</p>
+                </div>
+
+                <div
+                    class="glass flex gap-6 items-start group hover:bg-white/5 hover:border-[#E20A17] hover:shadow-[0_0_30px_rgba(226, 10, 23,0.2)] border border-white/5 transition-colors transition-shadow duration-300 p-8 rounded-3xl">
+                    <div
+                        class="bg-[#E20A17] text-white w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center font-meme text-2xl group-hover:rotate-6 group-hover:scale-110 shadow-lg transition-transform duration-300">
+                        1</div>
+                    <div>
+                        <h4 class="text-2xl font-meme mb-2 group-hover:text-[#E20A17] transition-colors duration-300">
+                            LOAD FUEL (SOL)</h4>
+                        <p class="text-white/70 group-hover:text-white transition-colors duration-300">Get some SOL into your Phantom or Solflare wallet. The fight requires entry tickets.</p>
+                    </div>
+                </div>
+                <div
+                    class="glass flex gap-6 items-start group hover:bg-white/5 hover:border-[#F3C623] hover:shadow-[0_0_30px_rgba(15, 44, 89,0.2)] border border-white/5 transition-colors transition-shadow duration-300 p-8 rounded-3xl">
+                    <div
+                        class="bg-[#F3C623] text-white w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center font-meme text-2xl group-hover:-rotate-6 group-hover:scale-110 shadow-lg transition-transform duration-300">
+                        2</div>
+                    <div>
+                        <h4 class="text-2xl font-meme mb-2 group-hover:text-[#F3C623] transition-colors duration-300">
+                            FIND THE OCTAGON</h4>
+                        <p class="text-white/70 group-hover:text-white transition-colors duration-300">Head to Pump.fun or Raydium and paste our CA into the search bar.</p>
+                    </div>
+                </div>
+                <div
+                    class="glass flex gap-6 items-start group hover:bg-white/5 hover:border-[#E20A17] hover:shadow-[0_0_30px_rgba(226, 10, 23,0.2)] border border-white/5 transition-colors transition-shadow duration-300 p-8 rounded-3xl">
+                    <div
+                        class="bg-[#E20A17] text-white w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center font-meme text-2xl group-hover:rotate-12 group-hover:scale-110 shadow-lg transition-transform duration-300">
+                        3</div>
+                    <div>
+                        <h4 class="text-2xl font-meme mb-2 group-hover:text-[#E20A17] transition-colors duration-300">
+                            SECURE THE BELT</h4>
+                        <p class="text-white/70 group-hover:text-white transition-colors duration-300">Swap your SOL for $UFC250. Welcome to the historic White House card. Hold tight.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. FAQ -->
+    <section class="py-24 bg-dark">
+        <div class="container mx-auto px-4 max-w-3xl">
+            <h2 class="text-4xl font-meme text-center mb-12 uppercase">THE PRESS BRIEFING</h2>
+            <div class="space-y-4">
+                <details
+                    class="group glass rounded-[2rem] p-8 cursor-pointer open:bg-white open:text-black transition-colors duration-300">
+                    <summary class="font-meme text-xl flex justify-between items-center list-none">
+                        WHAT IS UFC250 COIN?
+                        <span class="text-[#E20A17] group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <div class="mt-4 font-bold opacity-80"
+                        data-typewriter="UFC250 is a community-driven memecoin celebrating the historic, first-ever UFC event hosted on the White House South Lawn, occurring on Trump's 80th birthday.">
+                    </div>
+                </details>
+                <details
+                    class="group glass rounded-[2rem] p-8 cursor-pointer open:bg-white open:text-black transition-colors duration-300">
+                    <summary class="font-meme text-xl flex justify-between items-center list-none">
+                        WHY IS IT CONTROVERSIAL?
+                        <span class="text-[#E20A17] group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <div class="mt-4 font-bold opacity-80"
+                        data-typewriter="It merges America's 250th anniversary, a presidential 80th birthday, and the raw combat of the UFC inside the most famous lawn in the world. The media is losing its mind.">
+                    </div>
+                </details>
+                <details
+                    class="group glass rounded-[2rem] p-8 cursor-pointer open:bg-white open:text-black transition-colors duration-300">
+                    <summary class="font-meme text-xl flex justify-between items-center list-none">
+                        IS THE EVENT REAL?
+                        <span class="text-[#F3C623] group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <div class="mt-4 font-bold opacity-80"
+                        data-typewriter="The narrative represents the most chaotic, epic sports event imaginable. $UFC250 is the official meme currency of this historic vibe. Cook with caution!">
+                    </div>
+                </details>
+                <details
+                    class="group glass rounded-[2rem] p-8 cursor-pointer open:bg-white open:text-black transition-colors duration-300">
+                    <summary class="font-meme text-xl flex justify-between items-center list-none">
+                        WHERE TO JOIN THE CAMP?
+                        <span class="text-[#F3C623] group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <div class="mt-4 font-bold opacity-80"
+                        data-typewriter="Join our Telegram at <a href='https://t.me/ufcfreedom_250' target='_blank' class='text-[#E20A17] underline'>t.me/ufcfreedom_250</a> and follow us on X at <a href='https://x.com/ufc250coin_' target='_blank' class='text-[#E20A17] underline'>x.com/ufc250coin_</a>. That's where the fight card is active and the updates are freshest.">
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. FINAL CTA STRIP -->
+    <section class="py-20 bg-black overflow-hidden relative border-t border-b border-[#E20A17]/20">
+        <div class="absolute inset-0 opacity-10 animate-pulse bg-meme-gradient"></div>
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <h2 class="text-5xl md:text-9xl font-meme mb-10 italic">SECURE THE BELT OR GET LEFT BEHIND.</h2>
+            <a href="https://pump.fun/coin/GXieFxZFPVYuw3NJTfr4zRooeRgYPN9ssAkEn5MBpump" target="_blank">
+                <button
+                    class="bg-white text-black px-16 py-8 rounded-[2rem] font-meme text-3xl hover:bg-[#E20A17] hover:text-white hover:scale-110 transition-all shadow-[0_0_50px_rgba(226, 10, 23,0.4)]">
+                    JOIN UFC250
+                </button>
+            </a>
+        </div>
+    </section>
+
+    <!-- 11. FOOTER -->
+    <footer class="pt-24 pb-12 bg-dark border-t border-white/10 relative overflow-hidden">
+        <div
+            class="absolute -top-1/3 -left-1/3 w-[800px] h-[800px] bg-[#E20A17]/05 rounded-full blur-[120px] pointer-events-none">
+        </div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div
+                class="grid md:grid-cols-4 gap-12 text-center md:text-left items-center md:items-start border-b border-white/10 pb-12 mb-12">
+
+                <div class="md:col-span-1 flex flex-col items-center md:items-start">
+                    <img src="images/ufc.jpg" alt="UFC250 Footer Logo"
+                        class="w-24 h-24 rounded-full border border-[#E20A17]/50 shadow-[0_0_25px_rgba(226, 10, 23,0.4)] mb-6 pulse-glow">
+                    <div
+                        class="text-4xl font-meme bg-clip-text text-transparent bg-gradient-to-r from-[#E20A17] to-[#F3C623] mb-2">
+                        UFC250</div>
+                    <p class="text-sm opacity-50 font-bold uppercase tracking-widest italic">HISTORIC FIGHT OPERATIONS
+                    </p>
+                </div>
+
+                <div class="md:col-span-1">
+                    <h5
+                        class="font-meme text-lg text-[#E20A17] mb-6 underline underline-offset-8 decoration-[#E20A17]/50">
+                        NAVIGATION</h5>
+                    <ul class="space-y-4 font-bold text-sm tracking-widest uppercase opacity-70">
+                        <li><a href="#about" class="hover:text-[#E20A17] transition-colors">The Event</a></li>
+                        <li><a href="#chart" class="hover:text-[#E20A17] transition-colors">Live Chart</a></li>
+                        <li><a href="#mechanics" class="hover:text-[#E20A17] transition-colors">Tokenomics</a></li>
+                        <li><a href="#roadmap" class="hover:text-[#E20A17] transition-colors">The Schedule</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-1">
+                    <h5
+                        class="font-meme text-lg text-[#E20A17] mb-6 underline underline-offset-8 decoration-[#E20A17]/50">
+                        COMMS</h5>
+                    <div class="flex justify-center md:justify-start gap-6">
+                        <a href="https://t.me/ufcfreedom_250" target="_blank"
+                            class="w-12 h-12 glass rounded-full flex items-center justify-center hover:bg-[#E20A17] hover:text-white transition-all transform hover:scale-110 shadow-lg">
+                            <span class="text-xl">✈️</span>
+                        </a>
+                        <a href="https://x.com/ufc250coin_" target="_blank"
+                            class="w-12 h-12 glass rounded-full flex items-center justify-center hover:bg-[#E20A17] hover:text-white transition-all transform hover:scale-110 shadow-lg">
+                            <span class="text-xl">𝕏</span>
+                        </a>
+                        <a href="https://dexscreener.com/solana/GXieFxZFPVYuw3NJTfr4zRooeRgYPN9ssAkEn5MBpump"
+                            target="_blank"
+                            class="w-12 h-12 glass rounded-full flex items-center justify-center hover:bg-[#E20A17] hover:text-white transition-all transform hover:scale-110 shadow-lg">
+                            <span class="text-xl">📈</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="md:col-span-1">
+                    <h5
+                        class="font-meme text-lg text-[#E20A17] mb-6 underline underline-offset-8 decoration-[#E20A17]/50">
+                        DISCLAIMER</h5>
+                    <p class="text-xs opacity-40 leading-relaxed uppercase border-l-2 border-[#E20A17] pl-4">
+                        $UFC250 is a community-driven, narrative-led project celebrating the ultimate convergence of sports, history, and American anniversary celebrations. Not financial advice.
+                    </p>
+                </div>
+            </div>
+
+            <div
+                class="flex flex-col md:flex-row justify-between items-center text-[10px] opacity-30 tracking-[0.5em] uppercase px-4 font-bold">
+                <p>2026 UFC250 FIGHT OPERATIONS</p>
+                <p>STATUS: HISTORIC 🥜</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lightbox -->
+    <div id="lightbox" onclick="closeLightbox()" class="cursor-zoom-out backdrop-blur-md">
+        <div id="lightbox-content"
+            class="max-w-[90vw] max-h-[90vh] rounded-[2rem] overflow-hidden shadow-[0_0_100px_rgba(226, 10, 23,0.4)] border border-white/20 transform scale-90 transition-transform duration-300">
+            <img id="lightbox-img" src="" alt="Enlarged Archive" class="w-full h-full object-contain">
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Preloader Logic
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            const preloaderText = document.getElementById('preloader-text');
+
+            // Animate text first
+            gsap.to(preloaderText, {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power4.out"
+            });
+
+            // Fade out preloader
+            setTimeout(() => {
+                preloader.classList.add('opacity-0', 'pointer-events-none');
+                // Body reveal
+                gsap.from("nav", { y: -100, opacity: 0, duration: 1, ease: "power4.out" });
+                gsap.from("section", { opacity: 0, y: 50, duration: 1, stagger: 0.2, ease: "power4.out" });
+            }, 2000);
+        });
+
+        // Mobile Menu Logic
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const menuClose = document.getElementById('mobile-menu-close');
+        const menu = document.getElementById('mobile-menu');
+        const menuLinks = document.querySelectorAll('.mobile-nav-link');
+
+        function toggleMenu(show) {
+            if (show) {
+                menu.classList.remove('hidden');
+                setTimeout(() => {
+                    menu.classList.add('flex');
+                    menu.classList.remove('opacity-0');
+                    menu.classList.add('opacity-100');
+                }, 10);
+            } else {
+                menu.classList.remove('opacity-100');
+                menu.classList.add('opacity-0');
+                setTimeout(() => {
+                    menu.classList.add('hidden');
+                    menu.classList.remove('flex');
+                }, 500);
+            }
+        }
+
+        menuBtn.addEventListener('click', () => toggleMenu(true));
+        menuClose.addEventListener('click', () => toggleMenu(false));
+        menuLinks.forEach(link => link.addEventListener('click', () => toggleMenu(false)));
+
+        // Swiper Initialization
+        const swiper = new Swiper('.showcase-swiper', {
+            slidesPerView: 'auto',
+            centeredSlides: true,
+            spaceBetween: 30,
+            loop: true,
+            pagination: {
+                el: '.showcase-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.showcase-next',
+                prevEl: '.showcase-prev',
+            },
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+        });
+
+        // Typewriter Effect for FAQ
+        const typewriters = document.querySelectorAll('[data-typewriter]');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const text = entry.target.getAttribute('data-typewriter');
+                    entry.target.innerHTML = '';
+                    let i = 0;
+                    const interval = setInterval(() => {
+                        if (i < text.length) {
+                            entry.target.innerHTML += text.charAt(i);
+                            i++;
+                        } else {
+                            clearInterval(interval);
+                        }
+                    }, 20);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        typewriters.forEach(t => observer.observe(t));
+
+        // Lightbox Logic
+        function openLightbox(src) {
+            const lb = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            img.src = src;
+            lb.style.display = 'flex';
+            setTimeout(() => lb.classList.add('opacity-100'), 10);
+        }
+
+        function closeLightbox() {
+            const lb = document.getElementById('lightbox');
+            lb.style.display = 'none';
+        }
+
+        // Fetch Live Stats from DexScreener
+        async function fetchStats() {
+            try {
+                const response = await fetch('https://api.dexscreener.com/latest/dex/tokens/GXieFxZFPVYuw3NJTfr4zRooeRgYPN9ssAkEn5MBpump');
+                const data = await response.json();
+                if (data.pairs && data.pairs.length > 0) {
+                    const pair = data.pairs[0];
+                    
+                    const formatNumber = (num) => {
+                        if (num >= 1000000) return '$' + (num / 1000000).toFixed(2) + 'M';
+                        if (num >= 1000) return '$' + (num / 1000).toFixed(1) + 'K';
+                        return '$' + Math.floor(num).toLocaleString();
+                    };
+
+                    const mcap = pair.marketCap || pair.fdv || 0;
+                    document.getElementById('stat-mcap').innerText = formatNumber(mcap);
+                    
+                    const price = parseFloat(pair.priceUsd);
+                    document.getElementById('stat-price').innerText = price < 0.0001 ? '$' + price.toFixed(10) : '$' + price.toFixed(4);
+                    
+                    const liq = pair.liquidity ? pair.liquidity.usd : 0;
+                    document.getElementById('stat-liquidity').innerText = liq > 0 ? formatNumber(liq) : 'BONDING';
+                    
+                    const vol = pair.volume ? pair.volume.h24 : 0;
+                    document.getElementById('stat-volume').innerText = formatNumber(vol);
+                }
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        }
+        
+        setInterval(fetchStats, 30000);
+        fetchStats();
+
+    </script>
+</body>
+
+</html>
